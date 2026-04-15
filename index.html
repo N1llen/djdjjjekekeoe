@@ -2,522 +2,416 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Забота Рядом | Помощь пожилым и людям с инвалидностью</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Забота Рядом | Социальный проект Нижний Новгород</title>
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
     <style>
-        /* === ПЕРЕМЕННЫЕ И БАЗОВЫЕ НАСТРОЙКИ === */
         :root {
-            --primary: #F4A261; /* Теплый оранжевый */
-            --primary-hover: #E76F51;
-            --secondary: #2A9D8F; /* Спокойный изумрудный */
-            --bg-color: #F8F9FA;
-            --surface: rgba(255, 255, 255, 0.85);
-            --surface-solid: #FFFFFF;
-            --text-dark: #264653;
-            --text-muted: #6C757D;
-            --error: #E63946;
-            --success: #2A9D8F;
-            --radius: 20px;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            --transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --primary: #2A9D8F;
+            --primary-soft: rgba(42, 157, 143, 0.1);
+            --secondary: #F4A261;
+            --danger: #E63946;
+            --dark: #264653;
+            --light: #F8F9FA;
+            --white: #FFFFFF;
+            --glass: rgba(255, 255, 255, 0.8);
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
-        /* Режим повышенной контрастности (Доступность) */
+        /* --- РЕЖИМЫ ДОСТУПНОСТИ --- */
         body.high-contrast {
-            --primary: #000000;
-            --primary-hover: #333333;
-            --secondary: #000000;
-            --bg-color: #FFFFFF;
-            --surface: #FFFFFF;
-            --text-dark: #000000;
-            --text-muted: #000000;
-            --shadow: 0 0 0 2px #000;
+            --primary: #000; --secondary: #000; --dark: #000; --light: #fff; --white: #fff;
         }
+        body.large-text { font-size: 1.25rem; }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Nunito', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-dark);
-            line-height: 1.6;
-            overflow-x: hidden;
-            font-size: 18px; /* Крупный базовый шрифт для доступности */
-        }
-
-        body.large-text {
-            font-size: 22px;
-        }
-
-        a { text-decoration: none; color: inherit; }
-        ul { list-style: none; }
-        img { max-width: 100%; border-radius: var(--radius); }
-
-        /* Фоновый градиент (мягкий параллакс) */
-        .bg-gradient {
-            position: fixed;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle at 50% 50%, rgba(244, 162, 97, 0.08) 0%, rgba(42, 157, 143, 0.05) 50%, transparent 100%);
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        /* === ТИПОГРАФИКА === */
-        h1, h2, h3 { font-weight: 800; line-height: 1.2; margin-bottom: 1rem; color: var(--text-dark); }
-        h1 { font-size: 3rem; }
-        h2 { font-size: 2.2rem; text-align: center; margin-bottom: 2rem; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
         
-        .section { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; }
-
-        /* === КНОПКИ === */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: var(--transition);
-            border: none;
-            text-align: center;
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Manrope', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
         }
 
-        .btn-primary {
-            background-color: var(--primary);
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* --- ЭКСТРЕННАЯ ПАНЕЛЬ --- */
+        .sos-header {
+            background: var(--danger);
             color: white;
-            box-shadow: 0 4px 15px rgba(244, 162, 97, 0.3);
+            padding: 12px 0;
+            position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 4px 20px rgba(230, 57, 70, 0.3);
         }
-
-        .btn-primary:hover:not(:disabled) {
-            background-color: var(--primary-hover);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(244, 162, 97, 0.4);
-        }
-
-        .btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-            box-shadow: none;
-            transform: none;
-        }
-
-        /* Улучшенный фокус для скринридеров/клавиатуры */
-        *:focus-visible {
-            outline: 3px solid var(--secondary);
-            outline-offset: 4px;
-        }
-
-        /* === НАВИГАЦИЯ === */
-        header {
-            position: sticky; top: 0; z-index: 100;
-            background: var(--surface);
-            backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            padding: 1rem 2rem;
-        }
-
-        .nav-container {
-            max-width: 1200px; margin: 0 auto;
+        .sos-content {
             display: flex; justify-content: space-between; align-items: center;
         }
-
-        .logo { font-size: 1.5rem; font-weight: 800; color: var(--secondary); display: flex; align-items: center; gap: 10px; }
-        
-        .nav-links { display: flex; gap: 2rem; align-items: center; }
-        .nav-links a { font-weight: 600; transition: var(--transition); }
-        .nav-links a:hover { color: var(--primary); }
-
-        .accessibility-controls button {
-            background: none; border: 2px solid var(--text-dark); border-radius: 8px;
-            padding: 0.3rem 0.6rem; cursor: pointer; font-weight: bold; margin-left: 10px;
-            transition: var(--transition);
+        .sos-btn {
+            background: white; color: var(--danger);
+            padding: 8px 20px; border-radius: 50px;
+            font-weight: 800; text-decoration: none;
+            display: flex; align-items: center; gap: 8px;
+            animation: pulse 2s infinite;
         }
-        .accessibility-controls button:hover { background: var(--text-dark); color: white; }
-
-        /* === ГЕРОЙ БЛОК === */
-        .hero { display: flex; align-items: center; gap: 3rem; min-height: 80vh; }
-        .hero-text { flex: 1; }
-        .hero-image { flex: 1; position: relative; }
-        .hero-image img { box-shadow: var(--shadow); }
-        /* Эффект свечения за картинкой */
-        .hero-image::before {
-            content: ''; position: absolute; top: -10%; left: -10%; width: 120%; height: 120%;
-            background: radial-gradient(circle, rgba(42,157,143,0.2) 0%, transparent 70%); z-index: -1;
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
-        /* === КАРТОЧКИ (Стеклянный эффект) === */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
-        .card {
-            background: var(--surface-solid);
-            padding: 2.5rem;
-            border-radius: var(--radius);
+        /* --- НАВИГАЦИЯ --- */
+        nav {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .nav-flex { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--primary); }
+        .nav-tools { display: flex; gap: 15px; }
+        .tool-btn { 
+            background: var(--primary-soft); border: none; padding: 8px 12px; 
+            border-radius: 10px; cursor: pointer; font-weight: 600; color: var(--primary);
+        }
+
+        /* --- HERO СЕКЦИЯ --- */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+            background: radial-gradient(circle at top right, var(--primary-soft), transparent);
+        }
+        .hero h1 { font-size: clamp(32px, 5vw, 56px); margin: 0 0 20px; font-family: 'Playfair Display', serif; }
+        .hero p { max-width: 700px; margin: 0 auto 30px; font-size: 18px; color: #555; }
+
+        /* --- ВЫБОР РОЛИ --- */
+        .role-toggle {
+            display: inline-flex;
+            background: var(--white);
+            padding: 6px; border-radius: 100px;
             box-shadow: var(--shadow);
-            transition: var(--transition);
+            margin-bottom: 40px;
+        }
+        .role-toggle button {
+            border: none; padding: 14px 30px; border-radius: 100px;
+            font-family: inherit; font-weight: 700; cursor: pointer;
+            transition: var(--transition); background: transparent; color: #777;
+        }
+        .role-toggle button.active {
+            background: var(--primary); color: white;
+        }
+
+        /* --- КАРТОЧКИ УСЛУГ --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px; margin-bottom: 60px;
+        }
+        .card {
+            background: var(--white); padding: 35px; border-radius: 24px;
+            box-shadow: var(--shadow); transition: var(--transition);
             border: 1px solid rgba(0,0,0,0.02);
-            position: relative;
-            overflow: hidden;
         }
-        .card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
-        .card-icon { font-size: 3rem; margin-bottom: 1rem; }
-
-        /* === ФОРМА === */
-        .form-section { background: var(--surface); border-radius: var(--radius); padding: 4rem; box-shadow: var(--shadow); margin-top: 2rem; }
-        .form-group { margin-bottom: 1.5rem; position: relative; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
-        .form-control {
-            width: 100%; padding: 1rem; border: 2px solid #E9ECEF; border-radius: 12px;
-            font-size: 1rem; font-family: inherit; transition: var(--transition);
-            background: var(--bg-color);
-        }
-        .form-control:focus { border-color: var(--secondary); outline: none; background: white; }
-        .form-control.is-invalid { border-color: var(--error); }
-        .form-control.is-valid { border-color: var(--success); }
-        
-        .error-message {
-            color: var(--error); font-size: 0.85rem; margin-top: 0.5rem;
-            display: none; font-weight: 600;
-            animation: fadeIn 0.3s;
-        }
-        .form-control.is-invalid ~ .error-message { display: block; }
-
-        /* === МИНИ-ИГРА === */
-        .game-container {
-            background: #E8F5E9; border-radius: var(--radius); padding: 3rem; text-align: center;
-            border: 3px dashed var(--secondary);
-        }
-        .game-board {
-            display: flex; justify-content: center; gap: 2rem; margin: 2rem 0; flex-wrap: wrap;
-        }
-        .flower-pot {
-            width: 120px; height: 120px; background: #cddc39; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-size: 4rem;
-            cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            user-select: none; box-shadow: inset 0 -10px 0 rgba(0,0,0,0.1);
-        }
-        .flower-pot:hover, .flower-pot:focus { transform: scale(1.1); outline: 4px solid var(--primary); }
-        .flower-pot.bloomed { background: #FFFFFF; transform: scale(1.2); cursor: default; box-shadow: var(--shadow); outline: none; }
-        
-        /* === FAQ === */
-        .faq-item { margin-bottom: 1rem; border: 1px solid #ddd; border-radius: 12px; overflow: hidden; }
-        .faq-question {
-            width: 100%; text-align: left; padding: 1.5rem; background: white; border: none;
-            font-size: 1.1rem; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between;
-        }
-        .faq-answer { padding: 0 1.5rem; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: #fafafa; }
-        .faq-item.active .faq-answer { padding: 1.5rem; max-height: 500px; }
-
-        /* === КОНТАКТЫ === */
-        .contacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
-        .map-placeholder {
-            background: #e9ecef; height: 350px; border-radius: var(--radius); display: flex;
-            align-items: center; justify-content: center; font-weight: bold; color: var(--text-muted);
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%232A9D8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>');
-            background-repeat: no-repeat; background-position: center; background-size: 80px;
+        .card:hover { transform: translateY(-10px); }
+        .card-icon { 
+            font-size: 40px; margin-bottom: 20px; display: inline-block;
+            background: var(--primary-soft); padding: 15px; border-radius: 18px;
         }
 
-        /* === АНИМАЦИИ ПОЯВЛЕНИЯ === */
-        .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s ease; }
-        .reveal.active { opacity: 1; transform: translateY(0); }
+        /* --- ФОРМЫ --- */
+        .form-container {
+            max-width: 800px; margin: 0 auto;
+            background: var(--white); padding: 40px;
+            border-radius: 30px; box-shadow: var(--shadow);
+            display: none; animation: slideIn 0.5s ease;
+        }
+        .form-container.active { display: block; }
+        @keyframes slideIn { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 14px; text-transform: uppercase; color: var(--primary); }
+        input, select, textarea {
+            width: 100%; padding: 16px; border-radius: 14px;
+            border: 2px solid #eee; font-family: inherit; font-size: 16px;
+            transition: var(--transition); outline: none;
+        }
+        input:focus { border-color: var(--primary); background: var(--primary-soft); }
+        .error-hint { color: var(--danger); font-size: 12px; margin-top: 5px; display: none; }
 
-        /* === АДАПТИВНОСТЬ === */
-        @media (max-width: 768px) {
-            h1 { font-size: 2.2rem; }
-            .hero { flex-direction: column-reverse; text-align: center; }
-            .nav-links { display: none; /* В реальном проекте тут гамбургер меню */ }
-            .contacts-grid { grid-template-columns: 1fr; }
-            .form-section { padding: 2rem; }
+        .submit-btn {
+            background: var(--primary); color: white; border: none;
+            width: 100%; padding: 20px; border-radius: 16px;
+            font-size: 18px; font-weight: 800; cursor: pointer;
+            transition: var(--transition); box-shadow: 0 10px 20px rgba(42, 157, 143, 0.2);
+        }
+        .submit-btn:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
+
+        /* --- КАРТА --- */
+        .map-section { padding: 80px 0; background: var(--white); }
+        #map { width: 100%; height: 450px; border-radius: 30px; overflow: hidden; box-shadow: var(--shadow); }
+
+        /* --- МИНИ-ИГРА (Компактная) --- */
+        .game-footer {
+            background: var(--dark); color: white;
+            padding: 40px 20px; text-align: center;
+            border-radius: 40px 40px 0 0;
+        }
+        .game-box {
+            max-width: 400px; margin: 20px auto;
+            background: rgba(255,255,255,0.05); padding: 20px; border-radius: 24px;
+        }
+        .zen-circle {
+            width: 120px; height: 120px; margin: 20px auto;
+            background: var(--primary); border-radius: 50%;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-size: 40px; transition: 0.1s;
+            box-shadow: 0 0 30px var(--primary);
+        }
+        .zen-circle:active { transform: scale(0.9); }
+        .score-val { font-size: 32px; font-weight: 800; color: var(--primary); }
+
+        /* --- ОТЗЫВЫ --- */
+        .reviews { padding: 60px 0; overflow-x: auto; display: flex; gap: 20px; }
+        .review-card {
+            min-width: 300px; background: var(--white); padding: 20px;
+            border-radius: 20px; font-style: italic;
+        }
+
+        /* --- ФУТЕР --- */
+        footer { background: var(--dark); color: rgba(255,255,255,0.6); padding: 60px 0; text-align: center; }
+        .footer-logo { color: var(--white); font-size: 24px; margin-bottom: 20px; }
+        .phone-link { color: var(--secondary); font-size: 22px; font-weight: 800; text-decoration: none; }
+
+        /* Адаптив под мобилки */
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 32px; }
+            .form-container { padding: 25px; }
+            #map { height: 300px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-gradient"></div>
+    <div class="sos-header">
+        <div class="container sos-content">
+            <div style="font-weight: 700;">Нужна срочная помощь?</div>
+            <a href="tel:112" class="sos-btn">🚑 Вызвать 112</a>
+        </div>
+    </div>
 
-    <header>
-        <div class="nav-container">
-            <div class="logo">
-                <span aria-hidden="true">🕊️</span> Забота Рядом
-            </div>
-            <nav class="nav-links" aria-label="Главное меню">
-                <a href="#services">Наши услуги</a>
-                <a href="#how-it-works">Как это работает</a>
-                <a href="#help-form-section">Получить помощь</a>
-                <a href="#contacts">Контакты</a>
-            </nav>
-            <div class="accessibility-controls">
-                <button id="contrast-toggle" aria-label="Переключить контрастность">👁️ Контраст</button>
-                <button id="text-size-toggle" aria-label="Увеличить шрифт">A+</button>
+    <nav>
+        <div class="container nav-flex">
+            <div class="logo">Забота Рядом</div>
+            <div class="nav-tools">
+                <button class="tool-btn" onclick="toggleContrast()" title="Контрастность">👁️</button>
+                <button class="tool-btn" onclick="toggleTextSize()" title="Размер шрифта">A+</button>
             </div>
         </div>
-    </header>
+    </nav>
 
-    <main>
-        <section class="section hero reveal">
-            <div class="hero-text">
-                <h1>Поддержка, забота и внимание каждый день</h1>
-                <p style="font-size: 1.2rem; margin-bottom: 2rem; color: var(--text-muted);">
-                    Мы помогаем пожилым людям и людям с инвалидностью в Нижнем Новгороде жить комфортно, безопасно и радостно. Вы не одни — мы рядом.
-                </p>
-                <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center-md;">
-                    <a href="#help-form-section" class="btn btn-primary">Попросить о помощи</a>
-                    <a href="tel:+78310000000" class="btn" style="background: white; border: 2px solid var(--secondary); color: var(--secondary);">Позвонить нам</a>
-                </div>
-            </div>
-            <div class="hero-image">
-                <img src="https://images.unsplash.com/photo-1593113563332-e147ce106146?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Волонтер с теплотой держит руки пожилого человека">
-            </div>
-        </section>
-
-        <section id="services" class="section reveal">
-            <h2>Чем мы можем помочь?</h2>
-            <div class="grid">
-                <div class="card">
-                    <div class="card-icon" aria-hidden="true">🏠</div>
-                    <h3>Помощь по дому</h3>
-                    <p class="text-muted">Уборка, готовка, покупка продуктов и лекарств. Берем бытовые хлопоты на себя.</p>
-                </div>
-                <div class="card">
-                    <div class="card-icon" aria-hidden="true">🤝</div>
-                    <h3>Сопровождение</h3>
-                    <p class="text-muted">Поездки в больницу, на прогулку или культурные мероприятия на оборудованном транспорте.</p>
-                </div>
-                <div class="card">
-                    <div class="card-icon" aria-hidden="true">💬</div>
-                    <h3>Общение и досуг</h3>
-                    <p class="text-muted">Регулярные встречи, чтение книг, беседы и настольные игры для поддержания активности.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="section reveal">
-            <div class="game-container">
-                <h2>Сад Спокойствия 🌸</h2>
-                <p>Небольшая игра для расслабления и тренировки моторики. <br>Нажимайте на горшочки, чтобы вырастить красивые цветы!</p>
-                
-                <div class="game-board" id="game-board" role="application" aria-label="Игра: выращивание цветов">
-                    <button class="flower-pot" aria-label="Посадить цветок 1" onclick="bloomFlower(this, '🌻')">🌱</button>
-                    <button class="flower-pot" aria-label="Посадить цветок 2" onclick="bloomFlower(this, '🌷')">🌱</button>
-                    <button class="flower-pot" aria-label="Посадить цветок 3" onclick="bloomFlower(this, '🌼')">🌱</button>
-                    <button class="flower-pot" aria-label="Посадить цветок 4" onclick="bloomFlower(this, '🌹')">🌱</button>
-                </div>
-                <p id="game-message" style="font-weight: bold; color: var(--secondary); height: 24px;"></p>
-            </div>
-        </section>
-
-        <section id="help-form-section" class="section reveal">
-            <h2>Оставить заявку на помощь</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Заполните форму, и наш координатор свяжется с вами в течение часа.</p>
+    <section class="hero">
+        <div class="container">
+            <h1>Помогаем тем, кто <br><span style="color: var(--primary)">вдохновляет нас</span></h1>
+            <p>Профессиональный уход, волонтерская поддержка и тепло человеческого общения в Нижнем Новгороде.</p>
             
-            <div class="form-section">
-                <form id="help-form" novalidate>
-                    <div class="grid" style="gap: 1.5rem;">
-                        <div class="form-group">
-                            <label for="name">Ваше имя или имя подопечного *</label>
-                            <input type="text" id="name" class="form-control" required minlength="2" aria-required="true" placeholder="Например: Иван Иванов">
-                            <span class="error-message">Пожалуйста, введите корректное имя (не менее 2 букв).</span>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="phone">Номер телефона *</label>
-                            <input type="tel" id="phone" class="form-control" required placeholder="+7 (___) ___-__-__" aria-required="true">
-                            <span class="error-message">Введите телефон в формате +7 (XXX) XXX-XX-XX.</span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="service-type">Какая помощь требуется?</label>
-                        <select id="service-type" class="form-control">
-                            <option value="home">Помощь по дому</option>
-                            <option value="transport">Сопровождение</option>
-                            <option value="social">Общение и досуг</option>
-                            <option value="other">Другое</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="comment">Комментарий к заявке</label>
-                        <textarea id="comment" class="form-control" rows="4" placeholder="Напишите детали, адрес или удобное время для звонка..."></textarea>
-                    </div>
-
-                    <button type="submit" id="submit-btn" class="btn btn-primary" style="width: 100%;" disabled>Отправить заявку</button>
-                </form>
+            <div class="role-toggle">
+                <button id="role-client" class="active" onclick="switchRole('client')">Мне нужна помощь</button>
+                <button id="role-vol" onclick="switchRole('volunteer')">Я хочу помочь</button>
             </div>
-        </section>
 
-        <section class="section reveal">
-            <h2>Частые вопросы</h2>
-            <div style="max-width: 800px; margin: 0 auto;">
-                <div class="faq-item">
-                    <button class="faq-question" aria-expanded="false">Это платно? <span>▼</span></button>
-                    <div class="faq-answer"><p>Базовые услуги помощи предоставляются бесплатно благодаря нашим волонтерам и спонсорам. Сложные специализированные услуги обсуждаются индивидуально.</p></div>
+            <div id="services-grid" class="grid">
                 </div>
-                <div class="faq-item">
-                    <button class="faq-question" aria-expanded="false">Как вы проверяете волонтеров? <span>▼</span></button>
-                    <div class="faq-answer"><p>Каждый наш сотрудник и волонтер проходит строгую проверку безопасности, психологическое тестирование и специализированное обучение по работе с пожилыми людьми и инвалидами.</p></div>
+
+            <div id="form-client" class="form-container active">
+                <h2 style="margin-top:0">Заявка на поддержку</h2>
+                <div class="form-group">
+                    <label>Как к вам обращаться?</label>
+                    <input type="text" id="c-name" placeholder="Иван Иванович" oninput="validateForm('client')">
                 </div>
+                <div class="form-group">
+                    <label>Контактный телефон</label>
+                    <input type="tel" id="c-phone" placeholder="+7 987 543 5380" oninput="validateForm('client')">
+                </div>
+                <div class="form-group">
+                    <label>Тип помощи</label>
+                    <select id="c-service">
+                        <option value="delivery">Доставка продуктов/лекарств</option>
+                        <option value="cleaning">Уборка и быт</option>
+                        <option value="walking">Сопровождение на прогулку</option>
+                        <option value="talk">Просто пообщаться</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ваш адрес (НН)</label>
+                    <input type="text" id="c-address" placeholder="ул. Белинского, д. 5">
+                </div>
+                <button id="submit-client" class="submit-btn" disabled onclick="submitData('client')">Отправить запрос</button>
             </div>
-        </section>
 
-        <section id="contacts" class="section reveal">
-            <div class="contacts-grid">
-                <div>
-                    <h2>Ждем вас в гости</h2>
-                    <p style="font-size: 1.2rem; margin-bottom: 2rem;">Наш центр всегда открыт для вас. Вы можете прийти, чтобы обсудить помощь или просто выпить чаю.</p>
-                    
-                    <ul style="font-size: 1.2rem; line-height: 2;">
-                        <li>📍 <strong>Адрес:</strong> г. Нижний Новгород, ул. Белинская, 5</li>
-                        <li>📞 <strong>Телефон:</strong> <a href="tel:+78310000000" style="color: var(--primary); font-weight: bold;">+7 (831) 000-00-00</a></li>
-                        <li>✉️ <strong>Email:</strong> help@zabota-nn.ru</li>
-                        <li>🕒 <strong>Время работы:</strong> Пн-Пт с 9:00 до 18:00</li>
-                    </ul>
+            <div id="form-volunteer" class="form-container">
+                <h2 style="margin-top:0">Стать частью команды</h2>
+                <div class="form-group">
+                    <label>Ваше ФИО</label>
+                    <input type="text" id="v-name" placeholder="Анна Сергеевна" oninput="validateForm('volunteer')">
                 </div>
-                <div class="map-placeholder" aria-label="Карта с адресом: Белинская 5" role="img">
-                    <span style="margin-top: 100px;">г. Нижний Новгород, ул. Белинская, 5</span>
+                <div class="form-group">
+                    <label>Ваш номер</label>
+                    <input type="tel" id="v-phone" placeholder="+7 987 543 5380" oninput="validateForm('volunteer')">
                 </div>
+                <div class="form-group">
+                    <label>Ваш возраст</label>
+                    <input type="number" id="v-age" placeholder="20">
+                </div>
+                <div class="form-group">
+                    <label>Наличие авто</label>
+                    <select id="v-auto">
+                        <option value="no">Нет, пеший волонтер</option>
+                        <option value="yes">Да, есть автомобиль</option>
+                    </select>
+                </div>
+                <button id="submit-volunteer" class="submit-btn" disabled onclick="submitData('volunteer')">Зарегистрироваться</button>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
-    <footer style="background: var(--text-dark); color: white; padding: 3rem 2rem; text-align: center;">
-        <p>© 2026 Проект «Забота Рядом». Создано с любовью в Нижнем Новгороде.</p>
+    <section class="map-section">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 40px; font-family: 'Playfair Display', serif;">Наш координационный центр</h2>
+            <div id="map"></div>
+            <p style="text-align:center; margin-top:20px; font-weight:700;">📍 ул. Белинского, 5 (офис 12)</p>
+        </div>
+    </section>
+
+    <section class="game-footer">
+        <div class="container">
+            <h2>Минутка спокойствия</h2>
+            <p style="opacity:0.7">Нажимайте на круг, чтобы вырастить виртуальный сад добра</p>
+            <div class="game-box">
+                <div class="score-val" id="score">0</div>
+                <div style="font-size:10px; text-transform:uppercase; letter-spacing:2px; margin-bottom:15px;">Баллов заботы</div>
+                <div class="zen-circle" id="zen-btn" onclick="playZen()">🌸</div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-logo">Забота Рядом</div>
+            <p>Горячая линия проекта (НН):</p>
+            <a href="tel:+79875435380" class="phone-link">+7 987 543 5380</a>
+            <div style="margin-top:40px; font-size:12px; opacity:0.5;">
+                © 2024 Социальный патруль Нижнего Новгорода. <br>
+                Разработано с заботой о каждом человеке.
+            </div>
+        </div>
     </footer>
 
     <script>
-        // === 1. Анимация появления при скролле (Intersection Observer) ===
-        const revealElements = document.querySelectorAll('.reveal');
-        const revealOptions = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };
+        const tg = window.Telegram.WebApp;
+        tg.expand();
 
-        const revealOnScroll = new IntersectionObserver(function(entries, observer) {
-            entries.forEach(entry => {
-                if (!entry.isIntersecting) return;
-                entry.target.classList.add('active');
-                observer.unobserve(entry.target);
-            });
-        }, revealOptions);
+        // Данные для плиток
+        const services = {
+            client: [
+                { i: '🍎', t: 'Продукты', d: 'Привезем свежую еду' },
+                { i: '💊', t: 'Лекарства', d: 'Заберем из аптеки' },
+                { i: '🧹', t: 'Уборка', d: 'Поможем по дому' }
+            ],
+            volunteer: [
+                { i: '🚗', t: 'Авто-помощь', d: 'Если есть машина' },
+                { i: '🤝', t: 'Дружба', d: 'Общение и прогулки' },
+                { i: '📦', t: 'Курьер', d: 'Доставка важного' }
+            ]
+        };
 
-        revealElements.forEach(el => revealOnScroll.observe(el));
+        // Инициализация сетки
+        function renderGrid(role) {
+            const grid = document.getElementById('services-grid');
+            grid.innerHTML = services[role].map(s => `
+                <div class="card">
+                    <span class="card-icon">${s.i}</span>
+                    <h3>${s.t}</h3>
+                    <p style="color:#666; font-size:14px;">${s.d}</p>
+                </div>
+            `).join('');
+        }
+        renderGrid('client');
 
-        // === 2. Доступность (Контраст и Размер шрифта) ===
-        const contrastBtn = document.getElementById('contrast-toggle');
-        const textSizeBtn = document.getElementById('text-size-toggle');
-
-        contrastBtn.addEventListener('click', () => {
-            document.body.classList.toggle('high-contrast');
-            const isActive = document.body.classList.contains('high-contrast');
-            contrastBtn.setAttribute('aria-pressed', isActive);
-        });
-
-        textSizeBtn.addEventListener('click', () => {
-            document.body.classList.toggle('large-text');
-            const isActive = document.body.classList.contains('large-text');
-            textSizeBtn.setAttribute('aria-pressed', isActive);
-        });
-
-        // === 3. Логика Мини-игры "Сад Спокойствия" ===
-        let bloomedCount = 0;
-        function bloomFlower(button, emoji) {
-            if (button.classList.contains('bloomed')) return;
+        // Переключение ролей
+        function switchRole(role) {
+            document.getElementById('role-client').classList.toggle('active', role === 'client');
+            document.getElementById('role-vol').classList.toggle('active', role === 'volunteer');
             
-            button.innerHTML = emoji;
-            button.classList.add('bloomed');
-            button.setAttribute('aria-label', 'Распустившийся цветок');
-            bloomedCount++;
-
-            const msgBox = document.getElementById('game-message');
-            if (bloomedCount === 1) msgBox.textContent = "Прекрасное начало!";
-            else if (bloomedCount === 2) msgBox.textContent = "Сад становится ярче!";
-            else if (bloomedCount === 4) msgBox.textContent = "Поздравляем! Вы вырастили чудесный сад! 💐";
+            document.getElementById('form-client').classList.toggle('active', role === 'client');
+            document.getElementById('form-volunteer').classList.toggle('active', role === 'volunteer');
+            
+            renderGrid(role);
         }
 
-        // === 4. FAQ Аккордеон ===
-        const faqItems = document.querySelectorAll('.faq-item');
-        faqItems.forEach(item => {
-            const btn = item.querySelector('.faq-question');
-            btn.addEventListener('click', () => {
-                const isActive = item.classList.contains('active');
-                // Закрываем все
-                faqItems.forEach(i => {
-                    i.classList.remove('active');
-                    i.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
-                });
-                // Открываем кликнутый, если он был закрыт
-                if (!isActive) {
-                    item.classList.add('active');
-                    btn.setAttribute('aria-expanded', 'true');
-                }
+        // Валидация
+        function validateForm(role) {
+            if(role === 'client') {
+                const name = document.getElementById('c-name').value.length > 2;
+                const phone = document.getElementById('c-phone').value.length > 10;
+                document.getElementById('submit-client').disabled = !(name && phone);
+            } else {
+                const name = document.getElementById('v-name').value.length > 2;
+                const phone = document.getElementById('v-phone').value.length > 10;
+                document.getElementById('submit-volunteer').disabled = !(name && phone);
+            }
+        }
+
+        // Отправка
+        function submitData(role) {
+            const data = { role: role };
+            if(role === 'client') {
+                data.name = document.getElementById('c-name').value;
+                data.phone = document.getElementById('c-phone').value;
+                data.service = document.getElementById('c-service').value;
+            } else {
+                data.name = document.getElementById('v-name').value;
+                data.phone = document.getElementById('v-phone').value;
+            }
+            tg.sendData(JSON.stringify(data));
+            tg.showAlert("Заявка принята! Мы свяжемся с вами с номера +7 987 543 5380");
+        }
+
+        // Карта
+        ymaps.ready(() => {
+            const map = new ymaps.Map("map", {
+                center: [56.3155, 43.9915], // Белинского 5
+                zoom: 16,
+                controls: ['zoomControl']
             });
+            const placemark = new ymaps.Placemark([56.3155, 43.9915], {
+                balloonContent: '<b>Забота Рядом</b><br>ул. Белинского, 5'
+            }, {
+                preset: 'islands#redHeartIcon'
+            });
+            map.geoObjects.add(placemark);
         });
 
-        // === 5. Валидация формы и маска телефона ===
-        const form = document.getElementById('help-form');
-        const nameInput = document.getElementById('name');
-        const phoneInput = document.getElementById('phone');
-        const submitBtn = document.getElementById('submit-btn');
+        // Доступность
+        function toggleContrast() { document.body.classList.toggle('high-contrast'); }
+        function toggleTextSize() { document.body.classList.toggle('large-text'); }
 
-        // Маска для телефона (очень простая реализация для UX)
-        phoneInput.addEventListener('input', function(e) {
-            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
-            if (!x[1]) { e.target.value = '+7'; return; }
-            if (x[1] !== '7' && x[1] !== '8') x[1] = '7'; // Форсируем +7
-            e.target.value = !x[2] ? '+7' : '+7 (' + x[2] + (x[3] ? ') ' + x[3] : '') + (x[4] ? '-' + x[4] : '') + (x[5] ? '-' + x[5] : '');
-            validateForm();
-        });
-
-        function validateInput(input, condition) {
-            if (condition) {
-                input.classList.remove('is-invalid');
-                input.classList.add('is-valid');
-                return true;
-            } else {
-                input.classList.remove('is-valid');
-                if (input.value.length > 0) input.classList.add('is-invalid'); // Показываем ошибку только если начали вводить
-                return false;
-            }
+        // Игра
+        let score = 0;
+        const icons = ['🌸', '🌿', '☀️', '🕊️', '❤️'];
+        function playZen() {
+            score++;
+            document.getElementById('score').innerText = score;
+            const btn = document.getElementById('zen-btn');
+            btn.innerText = icons[score % icons.length];
+            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
         }
-
-        function validateForm() {
-            const isNameValid = validateInput(nameInput, nameInput.value.trim().length >= 2);
-            const phoneDigits = phoneInput.value.replace(/\D/g, '');
-            const isPhoneValid = validateInput(phoneInput, phoneDigits.length === 11);
-
-            if (isNameValid && isPhoneValid) {
-                submitBtn.removeAttribute('disabled');
-            } else {
-                submitBtn.setAttribute('disabled', 'true');
-            }
-        }
-
-        nameInput.addEventListener('input', validateForm);
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (!submitBtn.disabled) {
-                // Имитация успешной отправки
-                submitBtn.textContent = '✅ Заявка успешно отправлена';
-                submitBtn.style.backgroundColor = 'var(--success)';
-                form.reset();
-                nameInput.classList.remove('is-valid');
-                phoneInput.classList.remove('is-valid');
-                submitBtn.setAttribute('disabled', 'true');
-                setTimeout(() => {
-                    submitBtn.textContent = 'Отправить заявку';
-                    submitBtn.style.backgroundColor = 'var(--primary)';
-                }, 4000);
-            }
-        });
     </script>
 </body>
 </html>
-
