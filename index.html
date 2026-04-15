@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Помощь рядом</title>
+    <style>
+        /* Telegram Style CSS Variables */
+        :root {
+            --tg-blue: #3390ec;
+            --tg-blue-hover: #2b7bc9;
+            --tg-bg: #f4f4f5;
+            --tg-card: #ffffff;
+            --tg-text: #222222;
+            --tg-hint: #707579;
+            --danger: #e53935;
+            --danger-hover: #c62828;
+            --success: #4caf50;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--tg-bg);
+            color: var(--tg-text);
+            line-height: 1.5;
+            padding-bottom: 40px;
+        }
+
+        .container {
+            max-width: 600px; /* Мобильно-ориентированный интерфейс */
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        header h1 {
+            color: var(--tg-blue);
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        /* SOS Button */
+        .sos-container {
+            margin-bottom: 24px;
+        }
+
+        .sos-btn {
+            width: 100%;
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 24px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(229, 57, 53, 0.3);
+            transition: background-color 0.2s;
+        }
+
+        .sos-btn:hover {
+            background-color: var(--danger-hover);
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--tg-card);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        /* Tabs (Role Selection) */
+        .tabs {
+            display: flex;
+            background: #e4e4e5;
+            border-radius: 9px;
+            padding: 2px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--tg-hint);
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .tab.active {
+            background: var(--tg-card);
+            color: var(--tg-text);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* Buttons & Inputs */
+        .btn {
+            display: block;
+            width: 100%;
+            background-color: var(--tg-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--tg-blue-hover);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--tg-blue);
+            border: 1px solid var(--tg-blue);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(51, 144, 236, 0.1);
+        }
+
+        .btn-gosuslugi {
+            background-color: #0d4cd3; /* Цвет Госуслуг */
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 16px;
+            background: var(--tg-bg);
+            outline: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--tg-blue);
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+
+        /* Contacts & Map */
+        .contact-info {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 14px;
+            color: var(--tg-hint);
+        }
+
+        .hotline {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--tg-text);
+            margin: 8px 0;
+            display: block;
+            text-decoration: none;
+        }
+
+        .map-container {
+            margin-top: 16px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* Volunteer Rating */
+        .rating-badge {
+            display: inline-block;
+            background: #fff8e1;
+            color: #f57f17;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🤝 Помощь рядом</h1>
+        <p style="color: var(--tg-hint); font-size: 14px;">Сервис поддержки инвалидов и пожилых людей</p>
+    </header>
+
+    <div class="sos-container">
+        <button class="sos-btn" onclick="alert('ЭКСТРЕННЫЙ ВЫЗОВ АКТИВИРОВАН! Оператор свяжется с вами в течение минуты.')">
+            🚨 ЭКСТРЕННЫЙ ВЫЗОВ
+        </button>
+    </div>
+
+    <div id="authSection" class="card section active">
+        <h2>Вход и регистрация</h2>
+        <p style="font-size: 13px; color: var(--tg-hint); margin-bottom: 16px;">Для получения или оказания помощи необходимо авторизоваться</p>
+        
+        <button class="btn btn-gosuslugi" onclick="showRegistrationForm()">Вход через Госуслуги</button>
+        <button class="btn btn-outline" onclick="showRegistrationForm()">Обычная регистрация</button>
+    </div>
+
+    <div id="regFormSection" class="card section">
+        <h2>Завершение регистрации</h2>
+        <div class="tabs">
+            <div class="tab active" onclick="setRole('client', this)">Я ищу помощь</div>
+            <div class="tab" onclick="setRole('volunteer', this)">Я хочу помочь</div>
+        </div>
+        
+        <input type="text" placeholder="ФИО" id="regName">
+        <input type="tel" placeholder="Номер телефона" id="regPhone">
+        <input type="text" placeholder="Адрес (для оказания помощи)" id="regAddress">
+        
+        <button class="btn" onclick="completeRegistration()">Завершить регистрация</button>
+    </div>
+
+    <div id="clientSection" class="section">
+        <div class="card">
+            <h2>Запросить помощь</h2>
+            <p style="font-size: 13px; color: var(--tg-hint); margin-bottom: 16px;">Оставьте запрос, и наш оператор или волонтёр свяжется с вами для уточнения деталей.</p>
+            
+            <button class="btn" onclick="submitRequest('Сиделка')">Вызвать сиделку</button>
+            <button class="btn" onclick="submitRequest('Помощь рядом')">Ближайший человек (магазин/быт)</button>
+            <button class="btn" onclick="submitRequest('Бесплатный курьер')">Вызвать бесплатного курьера</button>
+            
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 16px 0;">
+            
+            <h3>Или опишите вашу проблему:</h3>
+            <textarea rows="3" placeholder="Что вам нужно? (Например: купить лекарства, помочь спуститься)"></textarea>
+            <button class="btn btn-outline" onclick="submitRequest('Свободный запрос')">Отправить заявку</button>
+        </div>
+    </div>
+
+    <div id="volunteerSection" class="section">
+        <div class="card">
+            <h2>Кабинет волонтёра</h2>
+            <div class="rating-badge">⭐ Рейтинг доверия: 4.8 (Ранг: Опытный)</div>
+            <p style="font-size: 13px; color: var(--tg-hint); margin-bottom: 16px;">Чем больше заявок вы выполняете, тем выше ваш ранг и доступ к сложным задачам.</p>
+            
+            <h3>Свежие заявки рядом с вами:</h3>
+            <div style="background: var(--tg-bg); padding: 10px; border-radius: 8px; margin-top: 10px;">
+                <strong>Мария Ивановна (700м)</strong><br>
+                <span style="font-size: 13px; color: var(--tg-hint);">Нужна помощь дойти до магазина.</span>
+                <button class="btn" style="margin-top: 8px; padding: 8px; font-size: 14px;">Откликнуться</button>
+            </div>
+            <div style="background: var(--tg-bg); padding: 10px; border-radius: 8px; margin-top: 10px;">
+                <strong>Алексей (1.2 км)</strong><br>
+                <span style="font-size: 13px; color: var(--tg-hint);">Бесплатный курьер: забрать посылку.</span>
+                <button class="btn" style="margin-top: 8px; padding: 8px; font-size: 14px;">Откликнуться</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact-info">
+        <p>Круглосуточная горячая линия:</p>
+        <a href="tel:+79875435380" class="hotline">+7 987 543 5380</a>
+        <p style="margin-top: 16px;">Сложности с регистрацией?<br>Приходите в наш центр, мы поможем!</p>
+        <p><strong>г. Пенза, ул. Белинского, 5</strong></p> <div class="map-container">
+            <iframe src="https://yandex.ru/map-widget/v1/?text=улица+Белинского,+5" width="100%" height="250" frameborder="0" allowfullscreen="true"></iframe>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let currentRole = 'client';
+
+    function showRegistrationForm() {
+        document.getElementById('authSection').classList.remove('active');
+        document.getElementById('regFormSection').classList.add('active');
+    }
+
+    function setRole(role, element) {
+        currentRole = role;
+        // Обновляем UI табов
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => tab.classList.remove('active'));
+        element.classList.add('active');
+    }
+
+    function completeRegistration() {
+        // Здесь в будущем будет отправка данных на ваш Python сервер
+        document.getElementById('regFormSection').classList.remove('active');
+        
+        if (currentRole === 'client') {
+            document.getElementById('clientSection').classList.add('active');
+        } else {
+            document.getElementById('volunteerSection').classList.add('active');
+        }
+        
+        alert('Регистрация успешно завершена! Ваши данные сохранены.');
+    }
+
+    function submitRequest(type) {
+        // Имитация пункта 4 из ТЗ: Клиент оставляет запрос и ему отвечают
+        alert(`Ваша заявка "${type}" принята!\n\nОна передана в систему. В ближайшее время оператор или волонтёр свяжется с вами для уточнения деталей.`);
+    }
+</script>
+
+</body>
+</html>
